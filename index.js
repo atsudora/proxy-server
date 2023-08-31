@@ -1,13 +1,13 @@
 const express = require("express")  // Expressの読み込みと利用の準備
 const app = express()
-const { createProxyMiddleware } = require("http-proxy-middleware")  
+const { createProxyMiddleware } = require("http-proxy-middleware")
 const ratelimit = require("express-rate-limit") //流量制限パッケージの読み込み
 require("dotenv").config()  //環境変数を使うためのパッケージの読み込み
 // const url = require("url")  //パラメータを受け取る時は記述する。
 
 /* 
 ・windowMsはアクセス数の制限を設ける時間幅。ここではミリ秒を扱っているので、
-　15 * 60 * 1000は15分を表している。
+ 15 * 60 * 1000は15分を表している。
 ・maxはこの15分間に受け付けるアクセス数の上限。
 */
 const limiter = ratelimit({
@@ -46,8 +46,8 @@ app.use("/corona-tracker-world-data", limiter, (req, res, next) => {
 
 // サーバーを実行するポートの指定
 const port = process.env.PORT || 5050
-app.listen(5050, () => {
-  console.log(`Listening on localhost port ${port}`)
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`)
 })
 
 module.exports = app
