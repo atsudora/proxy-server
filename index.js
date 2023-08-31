@@ -3,7 +3,7 @@ const app = express()
 const { createProxyMiddleware } = require("http-proxy-middleware")
 const ratelimit = require("express-rate-limit") //流量制限パッケージの読み込み
 require("dotenv").config()  //環境変数を使うためのパッケージの読み込み
-// const url = require("url")  //パラメータを受け取る時は記述する。
+const url = require("url")  //パラメータを受け取る時は記述する。
 
 /* 
 ・windowMsはアクセス数の制限を設ける時間幅。ここではミリ秒を扱っているので、
@@ -23,8 +23,7 @@ appの次にある.getがGETリクエストを処理することを表してい�
 ここではresの中のsendを使って()内のメッセージを返すようにしている。
 */
 app.get("/", (req, res) => {
-  // const params = url.parse(req.url).query //パラメータを受け取る時は記述する。
-  // console.log(params) //パラメータを受け取る時は記述する。
+  const city = url.parse(req.url).query //パラメータを受け取る時は記述する。
   res.send("This is my proxy server")
 })
 
@@ -40,6 +39,16 @@ app.use("/corona-tracker-world-data", limiter, (req, res, next) => {
     changeOrigin: true,
     pathRewrite: {
       [`^/corona-tracker-world-data`]: "",
+    },
+  })(req, res, next)
+})
+
+app.use("/weather-data", (req, res, next) => {
+  createProxyMiddleware({
+    target: `${process.env.BASE_API_URL_WEATHERAPI}${city}&api=no`,
+    changeOrigin: true,
+    pathRewrite: {
+      [`^"/weather-data`]: "",
     },
   })(req, res, next)
 })
